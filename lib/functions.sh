@@ -308,6 +308,11 @@ create_rootfs_img() {
     info "Extracting $ARCH rootfs..."
     bsdtar -xpf $ROOTFS_IMG/Manjaro-ARM-$ARCH-latest.tar.gz -C $ROOTFS_IMG/rootfs_$ARCH
     
+    if [ -f "$PROFILES/arm-profiles/repos/$DEVICE" ]; then
+        info "Copy custom pacman config into rootfs..."
+        cp "$PROFILES/arm-profiles/repos/$DEVICE" $ROOTFS_IMG/rootfs_$ARCH/etc/pacman.conf
+    fi
+
     info "Setting up keyrings..."
     $NSPAWN $ROOTFS_IMG/rootfs_$ARCH pacman-key --init 1>/dev/null || abort
     $NSPAWN $ROOTFS_IMG/rootfs_$ARCH pacman-key --populate archlinuxarm manjaro manjaro-arm 1>/dev/null || abort
